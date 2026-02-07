@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Мои задачи — ToDo Cloud{% endblock %}
+
+{% block content %}
+  <h1>Мои задачи</h1>
+
+  <div class="tasks-layout">
+    <!-- Левая колонка: добавление -->
+    <div class="card">
+      <h2>Добавить задачу</h2>
+
+      <form method="post" action="{{ url_for('tasks.add') }}">
+        <label>
+          Название
+          <input type="text" name="title" required placeholder="Например: Купить продукты">
+        </label>
+
+        <label>
+          Описание
+          <textarea
+            name="description"
+            rows="6"
+            placeholder="Коротко опиши, что нужно сделать (необязательно)"
+          ></textarea>
+        </label>
+
+        <button class="btn" type="submit">Добавить</button>
+      </form>
+    </div>
+
+    <!-- Правая колонка: списки -->
+    <div class="tasks-right">
+      <div class="card">
+        <h2>Активные</h2>
+
+        {% if not active_tasks %}
+          <p class="muted">Пока нет активных задач.</p>
+        {% endif %}
+
+        {% for t in active_tasks %}
+          <div class="task">
+            <div class="task-main">
+              <div class="task-title">{{ t.title }}</div>
+              {% if t.description %}
+                <div class="task-desc">{{ t.description }}</div>
+              {% endif %}
+            </div>
+
+            <div class="task-actions">
+              <form method="post" action="{{ url_for('tasks.toggle', task_id=t.id) }}">
+                <button class="btn btn-outline" type="submit">Готово</button>
+              </form>
+
+              <a class="btn btn-outline" href="{{ url_for('tasks.edit', task_id=t.id) }}">Правка</a>
+
+              <form
+                method="post"
+                action="{{ url_for('tasks.delete', task_id=t.id) }}"
+                data-confirm="delete"
+                data-task-title="{{ t.title }}"
+              >
+                <button class="btn btn-danger" type="submit">Удалить</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="card">
+        <h2>Выполненные</h2>
+
+        {% if not done_tasks %}
+          <p class="muted">Пока нет выполненных задач.</p>
+        {% endif %}
+
+        {% for t in done_tasks %}
+          <div class="task">
+            <div class="task-main">
+              <div class="task-title">{{ t.title }}</div>
+              {% if t.description %}
+                <div class="task-desc">{{ t.description }}</div>
+              {% endif %}
+            </div>
+
+            <div class="task-actions">
+              <form method="post" action="{{ url_for('tasks.toggle', task_id=t.id) }}">
+                <button class="btn btn-outline" type="submit">Вернуть</button>
+              </form>
+
+              <a class="btn btn-outline" href="{{ url_for('tasks.edit', task_id=t.id) }}">Правка</a>
+
+              <form
+                method="post"
+                action="{{ url_for('tasks.delete', task_id=t.id) }}"
+                data-confirm="delete"
+                data-task-title="{{ t.title }}"
+              >
+                <button class="btn btn-danger" type="submit">Удалить</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

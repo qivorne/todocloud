@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование задачи — ToDo Cloud{% endblock %}
+
+{% block content %}
+  <section class="task-edit">
+    <h1>Редактирование задачи</h1>
+    <p class="lead">
+      Измените название или описание задачи и сохраните изменения.
+    </p>
+
+    <div class="card">
+      <form method="post" action="{{ url_for('tasks.edit', task_id=task.id) }}">
+        <label>
+          Название
+          <input
+            type="text"
+            name="title"
+            required
+            value="{{ task.title }}"
+          >
+        </label>
+
+        <label>
+          Описание
+          <textarea
+            name="description"
+            rows="4"
+            placeholder="Описание задачи (необязательно)"
+          >{{ task.description }}</textarea>
+        </label>
+
+        <div class="actions">
+          <button class="btn" type="submit">Сохранить</button>
+          <a class="btn btn-outline" href="{{ url_for('tasks.index') }}">
+            Отмена
+          </a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

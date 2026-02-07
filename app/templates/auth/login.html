@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Вход — ToDo Cloud{% endblock %}
+
+{% block content %}
+  <section class="auth">
+    <h1>Вход в аккаунт</h1>
+    <p class="lead">Введите логин и пароль, чтобы продолжить работу с задачами.</p>
+
+    <form method="post" class="card auth-form">
+      <label>
+        Логин
+        <input
+          type="text"
+          name="username"
+          required
+          autocomplete="username"
+        >
+      </label>
+
+      <label>
+        Пароль
+        <input
+          type="password"
+          name="password"
+          required
+          autocomplete="current-password"
+        >
+      </label>
+
+      <button class="btn" type="submit">Войти</button>
+    </form>
+
+    <p class="auth-hint">
+      Нет аккаунта?
+      <a href="{{ url_for('auth.register') }}">Зарегистрироваться</a>
+    </p>
+  </section>
+{% endblock %}

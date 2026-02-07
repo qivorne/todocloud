@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация — ToDo Cloud{% endblock %}
+
+{% block content %}
+  <section class="auth">
+    <h1>Создать аккаунт</h1>
+    <p class="lead">Регистрация нужна, чтобы сохранять задачи и возвращаться к ним позже.</p>
+
+    <form method="post" class="card auth-form">
+      <label>
+        Имя
+        <input
+          type="text"
+          name="name"
+          required
+          autocomplete="name"
+          placeholder="Например: Эрик"
+        >
+      </label>
+
+      <label>
+        Логин
+        <input
+          type="text"
+          name="username"
+          required
+          autocomplete="username"
+          placeholder="Будет использоваться для входа"
+        >
+      </label>
+
+      <label>
+        Пароль
+        <input
+          type="password"
+          name="password"
+          required
+          autocomplete="new-password"
+        >
+      </label>
+
+      <label>
+        Подтверждение пароля
+        <input
+          type="password"
+          name="password2"
+          required
+          autocomplete="new-password"
+        >
+      </label>
+
+      <button class="btn" type="submit">Зарегистрироваться</button>
+    </form>
+
+    <p class="auth-hint">
+      Уже есть аккаунт?
+      <a href="{{ url_for('auth.login') }}">Войти</a>
+    </p>
+  </section>
+{% endblock %}

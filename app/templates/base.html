@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ToDo Cloud{% endblock %}</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <!-- Применяем сохранённую тему до отрисовки страницы (чтобы не мигало) -->
+  <script>
+    (function () {
+      try {
+        const theme = localStorage.getItem("theme");
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.removeAttribute("data-theme"); // dark по умолчанию
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+
+<body>
+  <header class="container header">
+    <div class="brand">ToDo Cloud</div>
+
+    <nav class="nav nav-center">
+      <a href="{{ url_for('home') }}">Главная</a>
+      {% if session.get("user_id") %}
+        <a href="{{ url_for('tasks.index') }}">Мои задачи</a>
+      {% endif %}
+    </nav>
+
+    <div class="nav nav-right">
+      <button
+        class="btn btn-outline btn-sm"
+        type="button"
+        id="themeToggle"
+        aria-label="Переключить тему"
+      >
+        Светлая
+      </button>
+
+      {% if session.get("user_id") %}
+        <a href="{{ url_for('auth.logout') }}">Выйти</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Войти</a>
+        <a href="{{ url_for('auth.register') }}">Регистрация</a>
+      {% endif %}
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="container footer">
+    <small>Учебный проект • Flask • PythonAnywhere</small>
+  </footer>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirmOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle" class="modal-title">Подтверждение</h3>
+      <p class="modal-text" id="confirmText">Вы уверены?</p>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" type="button" id="confirmCancel">Отмена</button>
+        <button class="btn btn-danger" type="button" id="confirmOk">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Переключение темы (с сохранением в localStorage) -->
+  <script>
+    (function () {
+      const btn = document.getElementById("themeToggle");
+      if (!btn) return;
+
+      function getTheme() {
+        try {
+          return localStorage.getItem("theme") === "light" ? "light" : "dark";
+        } catch (e) {
+          return "dark";
+        }
+      }
+
+      function applyTheme(theme) {
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+
+        try {
+          localStorage.setItem("theme", theme);
+        } catch (e) {}
+
+        // На кнопке показываем, на что можно переключиться
+        btn.textContent = (theme === "light") ? "Тёмная" : "Светлая";
+      }
+
+      // Инициализация
+      applyTheme(getTheme());
+
+      btn.addEventListener("click", () => {
+        applyTheme(getTheme() === "light" ? "dark" : "light");
+      });
+    })();
+  </script>
+
+  <!-- Кастомное подтверждение удаления -->
+  <script>
+    (function () {
+      const overlay = document.getElementById("confirmOverlay");
+      const titleEl = document.getElementById("confirmTitle");
+      const textEl = document.getElementById("confirmText");
+      const btnCancel = document.getElementById("confirmCancel");
+      const btnOk = document.getElementById("confirmOk");
+
+      let pendingSubmitForm = null;
+
+      function openConfirm({ title, text, okText }) {
+        titleEl.textContent = title || "Подтверждение";
+        textEl.textContent = text || "Вы уверены?";
+        btnOk.textContent = okText || "ОК";
+
+        overlay.hidden = false;
+        pendingSubmitForm = null;
+
+        // Фокус на кнопке отмены (приятнее по UX)
+        setTimeout(() => btnCancel.focus(), 0);
+      }
+
+      function closeConfirm() {
+        overlay.hidden = true;
+        pendingSubmitForm = null;
+      }
+
+      btnCancel.addEventListener("click", closeConfirm);
+
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closeConfirm();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (!overlay.hidden && e.key === "Escape") closeConfirm();
+      });
+
+      btnOk.addEventListener("click", () => {
+        if (pendingSubmitForm) pendingSubmitForm.submit();
+        closeConfirm();
+      });
+
+      // Перехват submit у форм с data-confirm="delete"
+      document.addEventListener("submit", (e) => {
+        const form = e.target;
+        if (!(form instanceof HTMLFormElement)) return;
+
+        if (form.dataset.confirm === "delete") {
+          e.preventDefault();
+
+          const taskTitle = form.dataset.taskTitle || "эту задачу";
+          openConfirm({
+            title: "Удаление задачи",
+            text: `Удалить «${taskTitle}»? Это действие нельзя отменить.`,
+            okText: "Удалить",
+          });
+
+          pendingSubmitForm = form;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
