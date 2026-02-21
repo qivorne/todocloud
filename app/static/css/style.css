@@ -242,7 +242,7 @@ input:focus, textarea:focus {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: center;
+  align-items: flex-start;
   padding: 14px;
   border-radius: 14px;
   background: color-mix(in srgb, var(--card) 75%, var(--bg) 25%);
@@ -260,12 +260,22 @@ input:focus, textarea:focus {
 .task-desc {
   color: var(--muted);
   margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;      /* максимум 3 строки */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.task-title, .task-desc {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.task-title {
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.task-desc {
+  margin-top: 4px;
+  color: var(--muted);
+  white-space: pre-wrap;        /* сохраняет переносы */
+  word-break: break-word;       /* ломает длинные слова */
 }
 
 .task-actions {
