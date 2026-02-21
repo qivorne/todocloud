@@ -240,9 +240,9 @@ input:focus, textarea:focus {
 /* Task item */
 .task {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   align-items: flex-start;
+  justify-content: space-between;
   padding: 14px;
   border-radius: 14px;
   background: color-mix(in srgb, var(--card) 75%, var(--bg) 25%);
@@ -252,53 +252,42 @@ input:focus, textarea:focus {
 
 .task-main {
   flex: 1;
-  min-width: 0; /* чтобы текст мог сжиматься */
-}
-
-.task-title { font-weight: 800; }
-
-.task-desc {
-  color: var(--muted);
-  margin-top: 4px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;      /* максимум 3 строки */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  min-width: 0;
 }
 
 .task-title {
   font-weight: 700;
+  margin-bottom: 4px;
   word-break: break-word;
 }
 
 .task-desc {
-  margin-top: 4px;
   color: var(--muted);
-  white-space: pre-wrap;        /* сохраняет переносы */
-  word-break: break-word;       /* ломает длинные слова */
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .task-actions {
   display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: nowrap;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0; /* ключевой момент */
 }
-
-.task-actions form { margin: 0; }
 
 .task-actions .btn {
-  height: 38px;
-  padding: 0 14px;
+  height: 36px;
+  min-width: 90px;
 }
 
-@media (max-width: 520px) {
-  .task { align-items: stretch; }
-  .task-actions {
+@media (max-width: 600px) {
+  .task {
     flex-direction: column;
-    align-items: stretch;
   }
-  .task-actions .btn { width: 100%; }
+
+  .task-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 
 /* ================================
