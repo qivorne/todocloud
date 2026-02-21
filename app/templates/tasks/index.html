@@ -13,7 +13,7 @@
       <form method="post" action="{{ url_for('tasks.add') }}">
         <label>
           Название
-          <input type="text" name="title" required placeholder="Например: Купить продукты">
+          <input type="text" name="title" required placeholder="Ваша задача">
         </label>
 
         <label>
@@ -21,7 +21,7 @@
           <textarea
             name="description"
             rows="6"
-            placeholder="Коротко опиши, что нужно сделать (необязательно)"
+            placeholder="Короткое описание задачи (необязательно)"
           ></textarea>
         </label>
 
